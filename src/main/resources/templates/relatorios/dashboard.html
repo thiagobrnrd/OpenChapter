@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Relatórios – OpenChapter</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --cream: #f5f5f3;
+            --ink: #1c1c1c;
+            --teal: #00696b;
+            --border: #ddd8d0;
+            --warm-gray: #8a8478;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 56px;
+            border-bottom: 1px solid var(--border);
+            background: var(--cream);
+        }
+
+        .nav-brand {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--teal);
+            text-decoration: none;
+        }
+
+        .page {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 48px 56px;
+            animation: fadeUp 0.6s ease both;
+        }
+
+        .page-header {
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3rem;
+            font-weight: 300;
+        }
+
+        .page-title em {
+            font-style: italic;
+            color: var(--teal);
+        }
+
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-top: 32px;
+        }
+
+        .stat-card {
+            background: #fff;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--teal);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--warm-gray);
+            margin-bottom: 12px;
+        }
+
+        .stat-value {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            color: var(--ink);
+        }
+
+        .stat-footer {
+            font-size: 12px;
+            color: var(--teal);
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a class="nav-brand" href="/home">OpenChapter</a>
+        <div style="display: flex; gap: 32px;">
+            <a href="/livros" style="text-decoration:none; color:var(--warm-gray); font-size:13px;">Livros</a>
+            <a href="/reservas" style="text-decoration:none; color:var(--warm-gray); font-size:13px;">Reservas</a>
+            <a href="/relatorios"
+                style="text-decoration:none; color:var(--teal); font-size:13px; font-weight:600;">Relatórios</a>
+        </div>
+    </nav>
+
+    <div class="page">
+        <div class="page-header">
+            <h1 class="page-title">Estatísticas do <em>Sistema</em></h1>
+            <p style="color: var(--warm-gray); font-size: 14px;">Visão geral do acervo e movimentações.</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Acervo Total</div>
+                <div class="stat-value" th:text="${stats.totalLivros}">0</div>
+                <div class="stat-footer">Títulos cadastrados</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Reservas Ativas</div>
+                <div class="stat-value" th:text="${stats.reservasAtivas}" style="color: var(--teal);">0</div>
+                <div class="stat-footer">Aguardando retirada</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Reservas Concluídas</div>
+                <div class="stat-value" th:text="${stats.reservasConcluidas}">0</div>
+                <div class="stat-footer">Sucesso na operação</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Disponibilidade</div>
+                <div class="stat-value" th:text="${stats.disponibilidade}" style="font-size: 1.8rem; margin-top: 10px;">
+                    -</div>
+                <div class="stat-footer">Status atual do banco</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

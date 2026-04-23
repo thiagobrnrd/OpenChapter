@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home – OpenChapter</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --cream: #f5f5f3;
+            --ink: #1c1c1c;
+            --teal: #00696b;
+            --teal-light: #0a8587;
+            --teal-pale: #e0f0f0;
+            --warm-gray: #8a8478;
+            --border: #ddd8d0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            min-height: 100vh;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 56px;
+            border-bottom: 1px solid var(--border);
+            background: var(--cream);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .nav-brand {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--teal);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            font-size: 13px;
+            color: var(--warm-gray);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--teal);
+            font-weight: 500;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .nav-user {
+            font-size: 13.5px;
+            color: var(--warm-gray);
+        }
+
+        .nav-user span {
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        .btn-logout {
+            padding: 8px 20px;
+            background: transparent;
+            border: 1.5px solid var(--border);
+            border-radius: 6px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--warm-gray);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+
+        .hero {
+            padding: 72px 56px 48px;
+            max-width: 1100px;
+            margin: 0 auto;
+            animation: fadeUp 0.6s ease both;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            font-size: 11px;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--teal);
+            background: var(--teal-pale);
+            padding: 5px 14px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 300;
+            line-height: 1.15;
+            margin-bottom: 16px;
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            color: var(--teal);
+        }
+
+        .hero p {
+            font-size: 15px;
+            color: var(--warm-gray);
+            font-weight: 300;
+            max-width: 480px;
+            line-height: 1.7;
+        }
+
+        .cards {
+            padding: 0 56px 80px;
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+            animation: fadeUp 0.8s ease both;
+            animation-delay: 0.15s;
+        }
+
+        .card {
+            background: #fff;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 28px;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 105, 107, 0.1);
+            border-color: var(--teal-pale);
+        }
+
+        .card-icon {
+            font-size: 28px;
+            margin-bottom: 16px;
+        }
+
+        .card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-weight: 400;
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            font-size: 13px;
+            color: var(--warm-gray);
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        .card-tag {
+            display: inline-block;
+            margin-top: 16px;
+            font-size: 10.5px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--teal);
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 640px) {
+
+            nav,
+            .hero,
+            .cards {
+                padding-left: 24px;
+                padding-right: 24px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a class="nav-brand" href="/home">OpenChapter</a>
+        <div class="nav-links">
+            <a href="/home">Home</a>
+            <a href="/livros">Livros</a>
+            <a href="/emprestimos">Empréstimos</a>
+            <a href="/reservas">Reservas</a>
+        </div>
+        <div class="nav-right">
+            <div class="nav-user">Olá, <span sec:authentication="name">usuário</span></div>
+            <form method="post" action="/logout" style="margin:0">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button type="submit" class="btn-logout">Sair</button>
+            </form>
+        </div>
+    </nav>
+    <div class="hero">
+        <div class="hero-tag"> Sua biblioteca digital</div>
+        <h1>Bem-vindo ao<br><em>OpenChapter.</em></h1>
+        <p>Gerencie seus livros, empréstimos e reservas em um só lugar. Sua próxima grande leitura começa aqui.</p>
+    </div>
+    <div class="cards">
+        <div class="card">
+            <div class="card-icon"></div>
+            <h3>Catálogo de Livros</h3>
+            <p>Explore e gerencie todos os títulos disponíveis na biblioteca.</p>
+            <a href="/livros" class="card-tag">Acessar →</a>
+        </div>
+        <div class="card">
+            <div class="card-icon"></div>
+            <h3>Empréstimos</h3>
+            <p>Acompanhe os livros emprestados e as datas de devolução.</p>
+            <a href="/emprestimos" class="card-tag">Acessar →</a>
+        </div>
+        <div class="card">
+            <div class="card-icon"></div>
+            <h3>Reservas</h3>
+            <p>Reserve títulos que estão temporariamente indisponíveis.</p>
+            <a href="/reservas" class="card-tag">Acessar →</a>
+        </div>
+        <a href="/relatorios" style="text-decoration: none; color: inherit;">
+            <div class="card">
+                <div class="card-icon"></div>
+                <h3>Relatórios</h3>
+                <p>Visualize estatísticas e relatórios sobre o acervo.</p>
+                <div class="card-tag" style="color: var(--teal); font-weight: 500;">Acessar Painel →</div>
+            </div>
+        </a>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login – OpenChapter</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --cream: #f5f5f3;
+            --ink: #1c1c1c;
+            --teal: #00696b;
+            --teal-dark: #005456;
+            --teal-light: #0a8587;
+            --teal-pale: #e0f0f0;
+            --warm-gray: #8a8478;
+            --border: #ddd8d0;
+            --error: #b85c4a;
+            --success: #00696b;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+        }
+
+        .page {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 100vh;
+        }
+
+        .left {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px 72px;
+            animation: fadeUp 0.7s ease both;
+        }
+
+        .logo-wrap {
+            margin-bottom: 48px;
+        }
+
+        .logo-wrap img {
+            height: 72px;
+            width: auto;
+        }
+
+        .heading {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            font-weight: 300;
+            line-height: 1.2;
+            color: var(--ink);
+            margin-bottom: 8px;
+        }
+
+        .heading em {
+            font-style: italic;
+            color: var(--teal);
+        }
+
+        .subheading {
+            font-size: 13.5px;
+            color: var(--warm-gray);
+            font-weight: 300;
+            margin-bottom: 40px;
+            letter-spacing: 0.3px;
+        }
+
+        .alert {
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        .alert-error {
+            background: #fdf0ee;
+            color: var(--error);
+            border-left: 3px solid var(--error);
+        }
+
+        .alert-success {
+            background: var(--teal-pale);
+            color: var(--teal-dark);
+            border-left: 3px solid var(--teal);
+        }
+
+        .alert-info {
+            background: var(--teal-pale);
+            color: var(--teal-dark);
+            border-left: 3px solid var(--teal);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field label {
+            font-size: 11.5px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--warm-gray);
+        }
+
+        .field input {
+            padding: 13px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            background: #fff;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            color: var(--ink);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+
+        .field input:focus {
+            border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(0, 105, 107, 0.12);
+        }
+
+        .field input::placeholder {
+            color: #c5bfb6;
+        }
+
+        .btn-primary {
+            margin-top: 6px;
+            padding: 14px;
+            background: var(--teal);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        .btn-primary:hover {
+            background: var(--teal-light);
+            transform: translateY(-1px);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--warm-gray);
+            font-size: 12px;
+            margin: 4px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .footer-link {
+            text-align: center;
+            font-size: 13.5px;
+            color: var(--warm-gray);
+        }
+
+        .footer-link a {
+            color: var(--teal);
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        .footer-link a:hover {
+            border-color: var(--teal);
+        }
+
+        .right {
+            position: relative;
+            overflow: hidden;
+            background: var(--teal-pale);
+        }
+
+        .right-inner {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(160deg, rgba(0, 105, 107, 0.25) 0%, rgba(245, 245, 243, 0.05) 60%), url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=900&q=80') center/cover no-repeat;
+        }
+
+        .right-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(245, 245, 243, 0.1) 0%, rgba(0, 40, 40, 0.45) 100%);
+        }
+
+        .right-content {
+            position: absolute;
+            bottom: 56px;
+            left: 48px;
+            right: 48px;
+            color: #fff;
+        }
+
+        .right-content blockquote {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.3rem, 2vw, 1.7rem);
+            font-weight: 300;
+            font-style: italic;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .right-content cite {
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0.8;
+            font-style: normal;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page {
+                grid-template-columns: 1fr;
+            }
+
+            .right {
+                display: none;
+            }
+
+            .left {
+                padding: 48px 32px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <div class="left">
+            <h1 class="heading">Bem-vindo<br>de <em>volta.</em></h1>
+            <p class="subheading">Entre na sua conta para continuar lendo.</p>
+            <div th:if="${param.error}" class="alert alert-error">Email ou senha inválidos. Tente novamente.</div>
+            <div th:if="${param.logout}" class="alert alert-info">Você saiu com sucesso.</div>
+            <div th:if="${param.cadastrado}" class="alert alert-success">Cadastro realizado! Faça seu login.</div>
+            <form method="post" action="/login">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <div class="field">
+                    <label>Email</label>
+                    <input type="email" name="username" placeholder="seu@email.com" required autofocus />
+                </div>
+                <div class="field">
+                    <label>Senha</label>
+                    <input type="password" name="password" placeholder="••••••••" required />
+                </div>
+                <button type="submit" class="btn-primary">Entrar</button>
+            </form>
+            <div class="divider" style="margin-top:24px">ou</div>
+            <p class="footer-link" style="margin-top:16px">Não tem conta? <a href="/cadastro">Cadastre-se</a></p>
+        </div>
+        <div class="right">
+            <div class="right-inner"></div>
+            <div class="right-overlay"></div>
+            <div class="right-content">
+                <blockquote>"A leitura é para a mente o que o exercício é para o corpo."</blockquote>
+                <cite>— Richard Steele</cite>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

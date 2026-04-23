@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservas – OpenChapter</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --cream: #f5f5f3;
+            --ink: #1c1c1c;
+            --teal: #00696b;
+            --teal-dark: #005456;
+            --teal-light: #0a8587;
+            --teal-pale: #e0f0f0;
+            --warm-gray: #8a8478;
+            --border: #ddd8d0;
+            --error: #b85c4a;
+            --success: #4a7c59;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            min-height: 100vh;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 56px;
+            border-bottom: 1px solid var(--border);
+            background: var(--cream);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .nav-brand {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--teal);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            font-size: 13px;
+            color: var(--warm-gray);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--teal);
+            font-weight: 500;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-user {
+            font-size: 13px;
+            color: var(--warm-gray);
+        }
+
+        .nav-user span {
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        .btn-logout {
+            padding: 7px 18px;
+            background: transparent;
+            border: 1.5px solid var(--border);
+            border-radius: 6px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12px;
+            color: var(--warm-gray);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+        }
+
+        .page {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 48px 56px 80px;
+            animation: fadeUp 0.6s ease both;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 300;
+            line-height: 1.1;
+        }
+
+        .page-title em {
+            font-style: italic;
+            color: var(--teal);
+        }
+
+        .page-subtitle {
+            font-size: 13px;
+            color: var(--warm-gray);
+            margin-top: 4px;
+        }
+
+        .btn-primary {
+            padding: 11px 24px;
+            background: var(--teal);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13.5px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        .btn-primary:hover {
+            background: var(--teal-light);
+            transform: translateY(-1px);
+        }
+
+        .alert {
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 24px;
+        }
+
+        .alert-success {
+            background: #edf5f0;
+            color: var(--success);
+            border-left: 3px solid var(--success);
+        }
+
+        .alert-info {
+            background: var(--teal-pale);
+            color: var(--teal-dark);
+            border-left: 3px solid var(--teal);
+        }
+
+        .table-wrap {
+            background: #fff;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--ink);
+        }
+
+        thead th {
+            padding: 14px 20px;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #fff;
+            text-align: left;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: #fafaf8;
+        }
+
+        tbody td {
+            padding: 14px 20px;
+            font-size: 13.5px;
+            color: var(--ink);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .badge-ativa {
+            background: var(--teal-pale);
+            color: var(--teal-dark);
+        }
+
+        .badge-cancelada {
+            background: #fdf0ee;
+            color: var(--error);
+        }
+
+        .badge-concluida {
+            background: #edf5f0;
+            color: var(--success);
+        }
+
+        .btn-cancelar {
+            padding: 6px 14px;
+            background: #fdf0ee;
+            color: var(--error);
+            border: none;
+            border-radius: 6px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-cancelar:hover {
+            background: #fad9d4;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 64px 24px;
+            color: var(--warm-gray);
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .empty h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: 8px;
+            color: var(--ink);
+        }
+
+        .empty p {
+            font-size: 13.5px;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            nav,
+            .page {
+                padding-left: 24px;
+                padding-right: 24px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a class="nav-brand" href="/home">OpenChapter</a>
+        <div class="nav-links">
+            <a href="/home">Home</a>
+            <a href="/livros">Livros</a>
+            <a href="/emprestimos">Empréstimos</a>
+            <a href="/reservas" class="active">Reservas</a>
+        </div>
+        <div class="nav-right">
+            <div class="nav-user">Olá, <span sec:authentication="name">usuário</span></div>
+            <form method="post" action="/logout" style="margin:0">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button type="submit" class="btn-logout">Sair</button>
+            </form>
+        </div>
+    </nav>
+
+    <div class="page">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Controle de <em>Reservas</em></h1>
+                <p class="page-subtitle" th:text="${reservas.size()} + ' reserva(s) registrada(s)'"></p>
+            </div>
+            <a href="/reservas/nova" class="btn-primary">+ Nova Reserva</a>
+        </div>
+
+        <div th:if="${param.sucesso}" class="alert alert-success">✓ Reserva realizada com sucesso!</div>
+        <div th:if="${param.cancelado}" class="alert alert-info">Reserva cancelada com sucesso.</div>
+
+        <div class="table-wrap">
+            <div th:if="${reservas.isEmpty()}" class="empty">
+                <div class="empty-icon">🔖</div>
+                <h3>Nenhuma reserva registrada</h3>
+                <p>Clique em "Nova Reserva" para reservar um título.</p>
+            </div>
+
+            <table th:if="${!reservas.isEmpty()}">
+                <thead>
+                    <tr>
+                        <th>Livro</th>
+                        <th>Usuário</th>
+                        <th>Data Reserva</th>
+                        <th>Expira em</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="r : ${reservas}">
+                        <td th:text="${r.livroTitulo}"></td>
+                        <td th:text="${r.usuarioEmail}"></td>
+                        <td th:text="${r.dataReserva}"></td>
+                        <td th:text="${r.dataExpiracao}"></td>
+                        <td>
+                            <span th:if="${r.status == 'ATIVA'}" class="badge badge-ativa">Ativa</span>
+                            <span th:if="${r.status == 'CANCELADA'}" class="badge badge-cancelada">Cancelada</span>
+                            <span th:if="${r.status == 'CONCLUIDA'}" class="badge badge-concluida">Concluída</span>
+                        </td>
+                        <td>
+                            <form th:if="${r.status == 'ATIVA'}" th:action="@{/reservas/cancelar/{id}(id=${r.id})}"
+                                method="post" style="margin:0" onsubmit="return confirm('Cancelar esta reserva?')">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                <button type="submit" class="btn-cancelar">Cancelar</button>
+                            </form>
+                            <span th:if="${r.status != 'ATIVA'}" style="font-size:12px; color:var(--warm-gray)">—</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>
